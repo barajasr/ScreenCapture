@@ -30,34 +30,7 @@ def dirExists(target):
 	return os.path.isdir(targetDir)
 
 def main():
-	periodicShots()
-
-def periodicShots(duration, period):
-	"""
-	Allows program to capture screen in a timely manner
-
-	dur: How long to take screenshots in seconds; 0 equal infinite duration time.
-	per:   Time interval between screenshots in seconds.
-	"""
-	start = time()
-	while (time() - start) < duration:
-		snapShot()
-		sleep(period)
-
-def snapShot():
-	"""
-	Takes a screenshot of current desktop. Saves image with timestap as filename.
-	"""
-
-	timeStamp = targetDir + datetime.datetime.now().strftime("%Y-%m-%d_%H%M%S")
-
-	# import - saves  any visible window on an X server and outputs it as an 
-	#	   image file. You can capture a single window, the entire screen, 
-	#	   or any rectangular portion of the screen.
-	command = "import -window root " + timeStamp + ".png"
-	os.system(command)
-
-if __name__ == "__main__":
+	global targetDir
 	args = vars(parser.parse_args())
 	print vars(parser.parse_args())
 	if args['directory'] is not None:
@@ -87,3 +60,31 @@ if __name__ == "__main__":
 				raise
 
 	periodicShots(duration, period)
+
+def periodicShots(duration, period):
+	"""
+	Allows program to capture screen in a timely manner
+
+	dur: How long to take screenshots in seconds; 0 equal infinite duration time.
+	per:   Time interval between screenshots in seconds.
+	"""
+	start = time()
+	while (time() - start) < duration:
+		snapShot()
+		sleep(period)
+
+def snapShot():
+	"""
+	Takes a screenshot of current desktop. Saves image with timestap as filename.
+	"""
+
+	timeStamp = targetDir + datetime.datetime.now().strftime("%Y-%m-%d_%H%M%S")
+
+	# import - saves  any visible window on an X server and outputs it as an 
+	#	   image file. You can capture a single window, the entire screen, 
+	#	   or any rectangular portion of the screen.
+	command = "import -window root " + timeStamp + ".png"
+	os.system(command)
+
+if __name__ == "__main__":
+	main()
