@@ -3,8 +3,11 @@
 # Author: Richard Barajas
 # Date: 27-08-2012
 #
-# Script invokes import command to take screenshot of desktop periodically 
-# for a requested amount of time.
+# Purpose:
+# 	-Script invokes import command to take screenshot of desktop periodically 
+# 	for a requested amount of time.
+#	-Use argparse module.
+	
 
 import argparse
 import errno
@@ -27,10 +30,12 @@ def dirExists(target):
 	return os.path.isdir(targetDir)
 
 def main():
-	periodaicShots()
+	periodicShots()
 
-def periodaicShots(duration, period):
+def periodicShots(duration, period):
 	"""
+	Allows program to capture screen in a timely manner
+
 	dur: How long to take screenshots in seconds; 0 equal infinite duration time.
 	per:   Time interval between screenshots in seconds.
 	"""
@@ -81,4 +86,4 @@ if __name__ == "__main__":
 			if exception.errno != errno.EEXIST:
 				raise
 
-	periodaicShots(duration, period)
+	periodicShots(duration, period)
