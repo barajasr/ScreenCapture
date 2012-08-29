@@ -4,7 +4,7 @@
 # Date: 27-08-2012
 #
 # Purpose:
-# 	-Script invokes import command to take screenshot of desktop periodically 
+# 	-Script invokes import command to take screenshot of desktop periodically on linux distro
 # 	for a requested amount of time.
 #	-Use argparse module.
 	
@@ -21,9 +21,7 @@ targetDir = "./"
 parser = argparse.ArgumentParser()
 parser.add_argument('-D', '--Directory', action='store', dest='directory', help='Directory/path to save images. Default is ./')
 parser.add_argument('-d', '--Duration', action='store', dest='duration', required=True, type=int, help='Duration of runtime for script in seconds by default.')
-#parser.add_argument('-dMin', action='store_true', dest='durMin', default=False, help='Use flag to set Duration to Minutes rather than seconds.')
 parser.add_argument('-p', '--Period', action='store', dest='period', required=True, type=int, help='Interval between screenshots in seconds by default.')
-#parser.add_argument('-pMin', action='store_true', dest='perMin', default=False, help='Use flag to set Period to Minutes rather than seconds.')
 
 
 def dirExists(target):
@@ -84,7 +82,10 @@ def snapShot():
 	#	   image file. You can capture a single window, the entire screen, 
 	#	   or any rectangular portion of the screen.
 	command = "import -window root " + timeStamp + ".png"
-	os.system(command)
+	if os.system(command) != 0:
+		# command failed
+		sys.stderr.write(datetime.datetime.now().strftime("%Y-%m-%d_%H%M%S") + '\timport command failed.\n')
+		exit()
 
 if __name__ == "__main__":
 	main()
