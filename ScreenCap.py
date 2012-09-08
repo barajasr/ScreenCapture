@@ -12,8 +12,8 @@
 import argparse
 import errno
 import os
-from sys import exit
-from time import sleep, time
+import sys
+import time
 import datetime
 
 targetDir = "./"
@@ -30,19 +30,18 @@ def dirExists(target):
 def main():
 	global targetDir
 	args = vars(parser.parse_args())
-	print vars(parser.parse_args())
 	if args['directory'] is not None:
 		targetDir = args['directory']
 
 	duration = args['duration']
 	if duration < 0:
 		print "Duration must be non-negative."
-		exit()
+		sys.exit()
 
 	period = args['period']
 	if period <= 0:
 		print "Period must be greater than zero."
-		exit()
+		sys.exit()
 
 	# Make sure proper directory name ending in slash
 	if targetDir[-1] != '/':
@@ -66,10 +65,28 @@ def periodicShots(duration, period):
 	dur: How long to take screenshots in seconds; 0 equal infinite duration time.
 	per:   Time interval between screenshots in seconds.
 	"""
-	start = time()
-	while (time() - start) < duration:
+	start = now = time.time()
+	while progressUpdate(start, now, duration) < 100 :
 		snapShot()
-		sleep(period)
+		time.sleep(0.5)
+		now = time.time()
+
+	print
+
+def progressUpdate(timeStarted, now, duration):
+	"""
+	Presents visual progress via progress bar and percentage on stdout.
+	Function returns percentage of time lapse from total time request.
+	"""
+	timeDifference = now - timeStarted
+	percentage = timeDifference / duration  * 100
+	if percentage > 100:
+		percentage = 100
+	timeDifference = duration - timeDifference
+	sys.stdout.write('\r')
+	sys.stdout.write("[%-50s]\t%d%%" % ('=' * int(percentage / 2), percentage))
+	sys.stdout.flush()
+	return percentage
 
 def snapShot():
 	"""
@@ -85,7 +102,8 @@ def snapShot():
 	if os.system(command) != 0:
 		# command failed
 		sys.stderr.write(datetime.datetime.now().strftime("%Y-%m-%d_%H%M%S") + '\timport command failed.\n')
-		exit()
+		sys.exit()
 
 if __name__ == "__main__":
 	main()
+
